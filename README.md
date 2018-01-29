@@ -18,7 +18,8 @@ It has next arguments:
 `n` - number of rows to show in frequency table. Other rows will be counted as Other. Defaults to 10.  
 `round_prct` - how many digits after dot to show in percentages(0 = "20", 1 = "20,5", 3 = "20,53"). Defaults to 0.  
 `show_sum` - whether to count sums in the lower row. Defaults to TRUE.  
-`show_nas` - wheter to count NA. Defaults to TRUE.  
+`show_nas` - whether to count NA. Defaults to TRUE.  
+`sum_prct_override` - should sum of percentages be always 100? Defaults to TRUE. If FALSE, it just sums up the rounded percentages (so sum of percentages will not be always 100 due to rounding error).
 
 ## Example
 
@@ -37,7 +38,7 @@ It has next arguments:
 13.3          1  3
 14.3          1  3
 Other        16 48
-Sum          32 96
+Sum          32 100
 
 > freqtab(mtcars$mpg, n = 5)
       Frequency  %
@@ -46,7 +47,7 @@ Sum          32 96
 19.2          2  6
 21            2  6
 Other        24 72
-Sum          32 96
+Sum          32 100
 
 > freqtab(mtcars$mpg, n = 5, round_prct = 2)
       Frequency     %
@@ -55,7 +56,7 @@ Sum          32 96
 19.2          2  6.25
 21            2  6.25
 Other        24 74.91
-Sum          32 99.91
+Sum          32   100
 ```
 
 # `crosstab()`
@@ -103,4 +104,28 @@ Other  38% 46%  17% 101%
 
 # Outputting
 
-I also made a routines to export such tables to Word and Excel inside `table_export_R`, but they are pretty basic, so I don't describe them here.
+I also made a routines to export such tables to Word and Excel inside `table_export_R`.
+
+## To Word:
+`save_to_word()` uses `ReporteRs` package to manipulate with .docx files. It creates (or appends to if it exists) a specified Word file and outputs dataframes as neat tables with zebra stripping. You can just stack as many tables as you want inside this Word file:  
+
+### Syntax:
+`table_object` - a dataframe to save.  
+`table_title` - a title of a table.  
+`docx_path` - where to store a Word file (append to a existing one or creates if it does not exist).  
+
+### Example:  
+```
+save_to_word(mtcars$mpg, "First table", "results/tables.docx")
+```
+
+## To Excel:
+`save_to_excel()` uses `openxlsx` to save dataframe inside an Excel file. It creates empty .xlsx file, a sheet there and saves a table inside the sheet.  
+
+### Syntax:
+`table_object` - a dataframe to save.  
+`sheet_name` - a name of a sheet inside .xlsx file.  
+`xlsx_path` - where to store an Excel file (creates a new one).  
+
+
+
