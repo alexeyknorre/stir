@@ -3,13 +3,23 @@ library(openxlsx)
 library(officer)
 library(ReporteRs)
 
-save_to_word <- function(table_object, table_title, docx_path = "example.docx") {
-  tab <- vanilla.table(table_object)
-  tab <- setZebraStyle(tab, odd = '#eeeeee', even = 'white')
+save_to_word <- function(table_object,
+                         table_title,
+                         docx_path = "tables.docx") {
+  # Create Word file if specified one is not found
+  if (!file.exists(docx_path)) {
+    doc <- docx()
+    writeDoc(doc, file = docx_path)
+  }
   
-  doc <- docx()
-  doc <- addTitle(doc, table_title)
+  tab <- vanilla.table(table_object)
+  tab <- setZebraStyle(tab, even = '#eeeeee', odd = 'white')
+  
+  doc <- docx(template = docx_path)
+  doc <- addParagraph(doc, value = table_title) 
+  #doc <- addTitle(doc, table_title)
   doc <- addFlexTable( doc, tab)
+  doc <- addParagraph(doc, "")
   writeDoc(doc, file = docx_path)
 }
 

@@ -1,4 +1,9 @@
-freqtab <- function(variable, n = 10, round_prct = 0, show_sum = T, show_na = T) {
+freqtab <- function(variable,
+                    n = 10,
+                    round_prct = 0,
+                    show_sum = T,
+                    show_na = T,
+                    sum_prct_override = T) {
   if (show_na == T) 
     { usena <- "ifany" } 
   else 
@@ -7,7 +12,7 @@ freqtab <- function(variable, n = 10, round_prct = 0, show_sum = T, show_na = T)
   tab <- cbind( Frequency = table(variable,useNA  = usena), '%' = round(prop.table(table(variable, useNA = usena))*100,round_prct))
   # Order them in descending fashion
   tab <-tab[ order(-tab[,1]), ]
-  # We cut most frequent values and sum other only if we have many unique values
+  # We cut most frequent values and sum others only if we have many unique values
   if (n < length(unique(variable))) { 
     # Count other options after cut
     Other <- colSums(tab[n:length(tab[,1]),])
@@ -23,6 +28,10 @@ freqtab <- function(variable, n = 10, round_prct = 0, show_sum = T, show_na = T)
   #rownames(tab) <- NULL
   # Fix NA to avoid data.frame conversion error
   row.names(tab)[which(is.na(row.names(tab)))] <- "NA"
+  # Override sum of percentages to have 100
+  if (sum_prct_override == T) {
+    tab[,2][[length(tab[,2])]] <- 100
+  }
   # Result
   as.data.frame(tab)
   
