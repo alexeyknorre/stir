@@ -42,12 +42,11 @@ crosstab <- function(variable_row,
                      row_n = 5,
                      col_n = 5,
                      round_prct = 0,
-                     na = T,
-                     sum = T){
-  if (na == T) { usena <- "ifany" } 
+                     show_na = T,
+                     show_sum = T){
+  if (show_na == T) { usena <- "ifany" } 
   else {usena <- "no"}
   tab <- table(variable_row, variable_column, useNA = usena)
-  #tab <- table(df$v1, df$v2, useNA = "ifany")
   
   colnames(tab)[is.na(colnames(tab))] <- "NAs"
   row.names(tab)[is.na(row.names(tab))] <- "NAs"
@@ -57,11 +56,9 @@ crosstab <- function(variable_row,
   tab <- tab[order(rowSums(tab),decreasing = T),]
   tab <- tab[order(colSums(tab),decreasing = T)]
   
-  #tab <- t(head(t(head(tab,row_n)), col_n))
-  
   # CUT COLUMNS
   # We cut most frequent values and sum other only if we have many unique values
-  if (col_n < length(unique(variable_column))) { 
+  if (col_n < length(unique(variable_column)) - !show_na) { 
     # Count other options after cut
     Other <- rowSums(tab[,col_n:ncol(tab)])
     # Cut values
@@ -82,7 +79,7 @@ crosstab <- function(variable_row,
     tab <- rbind(tab,Other)
   }
   tab_freqs <- tab
-  if (sum == T) {tab_freqs <- as.data.frame(addmargins(as.matrix(tab)))}
+  if (show_sum == T) {tab_freqs <- as.data.frame(addmargins(as.matrix(tab)))}
   
   ### Percentage tables
   
@@ -102,6 +99,4 @@ crosstab <- function(variable_row,
   return(tab_list)
   
 }
-
-
 
