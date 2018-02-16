@@ -25,14 +25,16 @@ save_to_word <- function(table_object,
   writeDoc(doc, file = docx_path)
 }
 
-save_to_excel <- function(table_object, sheet_name, xlsx_path = "tables.xlsx") {
+save_to_excel <- function(table_object,
+                          sheet_name,
+                          xlsx_path = "tables.xlsx",
+                          overwrite = F) {
   # Check if there is an xlsx output file
-  #if (file.exists(xlsx_path)) {
-  #  wb <- loadWorkbook(file = xlsx_path)}
-  #else {
-  #  wb <- createWorkbook()
-  #}
-  wb <- createWorkbook()
+  if (file.exists(xlsx_path) & overwrite == F) {
+    wb <- loadWorkbook(file = xlsx_path)}
+  else {
+    wb <- createWorkbook()
+  }
   addWorksheet(wb, sheet_name)
   writeDataTable(wb, x = table_object, sheet = sheet_name,
                  colNames = TRUE, rowNames = F, withFilter = F,
