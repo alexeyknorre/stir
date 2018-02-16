@@ -3,7 +3,7 @@ freqtab <- function(variable,
                     round_prct = 0,
                     show_sum = T,
                     show_na = T,
-                    sum_prct_override = T) {
+                    sum_prct_override = F) {
   if (show_na == T) 
     { usena <- "ifany" } 
   else 
@@ -23,8 +23,7 @@ freqtab <- function(variable,
   }
   # Summing up by columns
   if (show_sum == T) {tab <- addmargins(tab, 1)}
-  # Row names to first column
-  #tab <- cbind(Name = rownames(tab), tab)
+
   #rownames(tab) <- NULL
   # Fix NA to avoid data.frame conversion error
   row.names(tab)[which(is.na(row.names(tab)))] <- "NA"
@@ -32,9 +31,12 @@ freqtab <- function(variable,
   if (sum_prct_override == T) {
     tab[,2][[length(tab[,2])]] <- 100
   }
+  
+  # Row names to first column
+  tab <- cbind(Name = rownames(tab), tab)
+  rownames(tab) <- NULL
   # Result
   as.data.frame(tab)
-  
 }
 
 crosstab <- function(variable_row,

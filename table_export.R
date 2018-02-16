@@ -5,9 +5,11 @@ library(ReporteRs)
 
 save_to_word <- function(table_object,
                          table_title,
-                         docx_path = "tables.docx") {
+                         docx_path = "tables.docx",
+                         overwrite = F) {
   # Create Word file if specified one is not found
-  if (!file.exists(docx_path)) {
+  if (!file.exists(docx_path) |
+      overwrite == T) {
     doc <- docx()
     writeDoc(doc, file = docx_path)
   }
